@@ -1,0 +1,53 @@
+version: "3.7"
+services:
+    master:
+        container_name: master
+        build: ./master
+        restart: always
+        hostname: node-master
+        ports: 
+            - 22
+            - 9000
+            - 9870:9870
+            - 8088:8088
+        networks: 
+            pwc:
+                aliases: 
+                    - node-master
+        volumes:
+            - /C/ssh-keys:/ssh-keys
+    node-worker-1:
+        container_name: node-worker-1
+        build: ./worker
+        restart: always
+        depends_on: 
+            - master
+        hostname: node-worker-1
+        ports: 
+            - 22
+        networks: 
+            pwc:
+                aliases: 
+                    - node-worker-1
+        volumes:
+            - /C/ssh-keys:/ssh-keys
+    node-worker-2:
+        container_name: node-worker-2
+        build: ./worker
+        restart: always
+        depends_on: 
+            - master
+        hostname: node-worker-2
+        ports: 
+            - 22
+        networks: 
+            pwc:
+                aliases: 
+                    - node-worker-2
+        volumes:
+            - /C/ssh-keys:/ssh-keys
+networks: 
+    pwc:
+    
+volumes:
+    ssh-keys:
