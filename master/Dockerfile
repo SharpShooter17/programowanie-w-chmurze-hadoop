@@ -1,3 +1,7 @@
+FROM maven:3.6.0-jdk-11-slim AS build
+COPY hadoop-job /home/hadoop-job
+RUN mvn -f /home/hadoop-job/pom.xml clean package
+
 FROM ubuntu
 
 USER root
@@ -39,6 +43,9 @@ ENV YARN_RESOURCEMANAGER_USER="root"
 ENV YARN_NODEMANAGER_USER="root"
 
 EXPOSE 22/tcp
+
+COPY data.txt data.txt
+COPY --from=build /home/hadoop-job/target/hadoop-job.jar hadoop-job.jar
 
 COPY start.sh start.sh
 
